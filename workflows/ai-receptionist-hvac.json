@@ -1,0 +1,145 @@
+{
+  "name": "AI Voice Receptionist - HVAC",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"message\": \"Call received\", \"status\": \"ok\" } }}"
+      },
+      "name": "Webhook - Incoming Call",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "vapi-incoming"
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.VAPI_API_URL + '/call' }}",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.VAPI_API_KEY }}" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "assistantId", "value": "={{ $env.VAPI_ASSISTANT_ID }}" },
+            { "name": "customer", "value": "={{ { \"number\": $json.body.call.customer.number } }}" },
+            { "name": "phoneNumberId", "value": "={{ $env.VAPI_PHONE_NUMBER_ID }}" }
+          ]
+        }
+      },
+      "name": "Vapi - Start Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300],
+      "credentials": {
+        "httpHeaderAuth": { "id": "vapi-cred", "name": "Vapi API" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendarId": "={{ $env.GOOGLE_CALENDAR_ID }}",
+        "timeMin": "={{ $now.toISO() }}",
+        "timeMax": "={{ $now.plus({days: 7}).toISO() }}",
+        "additionalFields": {}
+      },
+      "name": "Google Calendar - Get Slots",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "credentials": {
+        "googleCalendarOAuth2Api": { "id": "gcal-cred", "name": "Google Calendar" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "calendarId": "={{ $env.GOOGLE_CALENDAR_ID }}",
+        "start": "={{ $json.start }}",
+        "end": "={{ $json.end }}",
+        "additionalFields": {
+          "summary": "={{ 'HVAC Service - ' + $json.customerName }}",
+          "description": "={{ 'Phone: ' + $json.customerPhone + '\\nIssue: ' + $json.serviceType }}",
+          "attendees": [ "={{ $json.customerEmail }}" ]
+        }
+      },
+      "name": "Google Calendar - Book Appointment",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [850, 300],
+      "credentials": {
+        "googleCalendarOAuth2Api": { "id": "gcal-cred", "name": "Google Calendar" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumber": "={{ $json.customerPhone }}",
+        "message": "={{ 'Hi ' + $json.customerName + '! Your HVAC appointment is confirmed for ' + $json.appointmentDate + ' at ' + $json.appointmentTime + '. Reply STOP to cancel.' }}"
+      },
+      "name": "Twilio - Send SMS Confirmation",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1050, 300],
+      "credentials": {
+        "twilioApi": { "id": "twilio-cred", "name": "Twilio" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "={{ $env.GOOGLE_SHEET_ID }}",
+        "range": "A:F",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}",
+            "Customer": "={{ $json.customerName }}",
+            "Phone": "={{ $json.customerPhone }}",
+            "Service": "={{ $json.serviceType }}",
+            "Status": "Booked",
+            "Appointment": "={{ $json.appointmentDate }}"
+          }
+        }
+      },
+      "name": "Google Sheets - Log Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.1,
+      "position": [1250, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "gsheet-cred", "name": "Google Sheets" }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Incoming Call": {
+      "main": [[{ "node": "Vapi - Start Call", "type": "main", "index": 0 }]]
+    },
+    "Vapi - Start Call": {
+      "main": [[{ "node": "Google Calendar - Get Slots", "type": "main", "index": 0 }]]
+    },
+    "Google Calendar - Get Slots": {
+      "main": [[{ "node": "Google Calendar - Book Appointment", "type": "main", "index": 0 }]]
+    },
+    "Google Calendar - Book Appointment": {
+      "main": [[{ "node": "Twilio - Send SMS Confirmation", "type": "main", "index": 0 }]]
+    },
+    "Twilio - Send SMS Confirmation": {
+      "main": [[{ "node": "Google Sheets - Log Lead", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-13T21:30:00.000Z",
+  "versionId": "1"
+}
