@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free AI Voice Demo | Never Miss a Call</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0f; color: #e8e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { max-width: 600px; text-align: center; }
+        .demo-box { background: #12121a; border: 1px solid #1e1e2e; border-radius: 16px; padding: 40px; margin: 30px 0; }
+        h1 { font-size: 2.2em; background: linear-gradient(135deg, #00d4aa, #00a8e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+        p { color: #a0a0b8; margin-bottom: 20px; font-size: 1.1em; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #00d4aa, #00a8e8); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1.1em; margin: 10px; }
+        .cta-secondary { background: transparent; border: 2px solid #00d4aa; color: #00d4aa; }
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 30px 0; }
+        .feature { background: #1a1a28; border-radius: 10px; padding: 15px; }
+        .feature h3 { color: #00d4aa; font-size: 0.9em; margin-bottom: 5px; }
+        .feature p { font-size: 0.8em; color: #888; margin: 0; }
+        input[type="tel"] { background: #1a1a28; border: 1px solid #2a2a3a; color: #fff; padding: 15px; border-radius: 8px; font-size: 1em; width: 100%; margin-bottom: 15px; text-align: center; }
+        #status { margin-top: 15px; padding: 10px; border-radius: 8px; display: none; }
+        .success { background: #0d2818; border: 1px solid #00d4aa; color: #00d4aa; }
+        .error { background: #2d1515; border: 1px solid #ff4444; color: #ff4444; }
+        @media (max-width: 500px) { .features { grid-template-columns: 1fr; } h1 { font-size: 1.8em; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Try Our AI Voice Receptionist</h1>
+        <p>Enter your phone number and our AI will call you back in 30 seconds. Experience how it sounds.</p>
+        
+        <div class="demo-box">
+            <input type="tel" id="phone" placeholder="Enter your phone number (e.g., +1 602 555 1234)">
+            <button class="cta-button" onclick="requestCall()">Request a Call Back</button>
+            <div id="status"></div>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>24/7</h3>
+                <p>Never miss a call, even at 2 AM</p>
+            </div>
+            <div class="feature">
+                <h3>Human-Sounding</h3>
+                <p>Callers can't tell it's AI</p>
+            </div>
+            <div class="feature">
+                <h3>Instant Booking</h3>
+                <p>Schedules appointments automatically</p>
+            </div>
+        </div>
+        
+        <p style="font-size: 0.9em; color: #666;">Free 7-day trial for HVAC, plumbing, and service businesses. No credit card required.</p>
+    </div>
+    
+    <script>
+        function requestCall() {
+            const phone = document.getElementById('phone').value.trim();
+            const status = document.getElementById('status');
+            
+            if (!phone || phone.length < 10) {
+                status.style.display = 'block';
+                status.className = 'error';
+                status.textContent = 'Please enter a valid phone number';
+                return;
+            }
+            
+            // Simulate API call to request callback
+            status.style.display = 'block';
+            status.className = 'success';
+            status.textContent = 'Calling ' + phone + ' now...';
+            
+            // In production, this would trigger a real call via Twilio/Vapi
+            setTimeout(() => {
+                status.textContent = 'Call initiated! You should receive a call within 30 seconds.';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

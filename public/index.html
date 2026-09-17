@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منشئ عروض الذكاء الاصطناعي | SaaS Demo Builder</title>
+    <meta name="description" content="أنشئ عروض موظف استقبال بالذكاء الاصطناعي لشركتك. خطة مجانية متاحة.">
+    <meta property="og:title" content="منشئ عروض الذكاء الاصطناعي">
+    <meta property="og:description" content="أنشئ عروض موظف استقبال بالذكاء الاصطناعي لشركتك. خطة مجانية متاحة.">
+    <meta property="og:type" content="website">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e8e8f0; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .hero { text-align: center; padding: 50px 0 30px; }
+        .hero h1 { font-size: 2.4em; font-weight: 800; background: linear-gradient(135deg, #00d4aa, #00a8e8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 14px; }
+        .hero p { font-size: 1.15em; color: #a0a0b8; max-width: 550px; margin: 0 auto 28px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 32px 0; }
+        .stat { background: #12121a; border: 1px solid #1e1e2e; border-radius: 12px; padding: 20px; text-align: center; }
+        .stat-number { font-size: 1.8em; font-weight: 700; color: #00d4aa; }
+        .stat-label { font-size: 0.85em; color: #888; margin-top: 4px; }
+        .builder { background: #12121a; border: 1px solid #1e1e2e; border-radius: 16px; padding: 32px; margin: 32px 0; }
+        .builder h2 { font-size: 1.5em; margin-bottom: 20px; color: #fff; text-align: center; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; color: #a0a0b8; margin-bottom: 6px; font-size: 0.95em; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; background: #1a1a28; border: 1px solid #2a2a3a; color: #fff; padding: 14px; border-radius: 8px; font-size: 1em; outline: none; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #00d4aa; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .btn { display: inline-block; background: linear-gradient(135deg, #00d4aa, #00a8e8); color: #000; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1em; margin: 8px; cursor: pointer; border: none; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-secondary { background: transparent; border: 2px solid #00d4aa; color: #00d4aa; }
+        .demo-area { display: none; margin-top: 30px; text-align: center; }
+        .demo-area.active { display: block; }
+        .phone-sim { background: linear-gradient(135deg, #1a1a28, #2a2a3a); border-radius: 24px; padding: 30px; margin: 20px auto; max-width: 350px; }
+        .phone-sim h3 { color: #00d4aa; margin-bottom: 10px; }
+        .phone-sim p { color: #a0a0b8; font-size: 0.95em; margin-bottom: 20px; }
+        .pulse { display: inline-block; width: 60px; height: 60px; background: #00d4aa; border-radius: 50%; animation: pulse 1.5s infinite; margin: 10px; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
+        .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 32px 0; }
+        .feature { background: #12121a; border: 1px solid #1e1e2e; border-radius: 10px; padding: 18px; }
+        .feature h3 { color: #00d4aa; margin-bottom: 6px; font-size: 1em; }
+        .feature p { color: #a0a0b8; font-size: 0.9em; }
+        .cta-section { text-align: center; padding: 40px 0; }
+        .cta-section h2 { font-size: 1.8em; margin-bottom: 12px; color: #fff; }
+        .cta-section p { color: #a0a0b8; margin-bottom: 20px; }
+        .pricing { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 28px 0; }
+        .price-card { background: #12121a; border: 1px solid #1e1e2e; border-radius: 16px; padding: 28px; text-align: center; }
+        .price-card.featured { border-color: #00d4aa; }
+        .price-amount { font-size: 2.2em; font-weight: 800; color: #fff; }
+        .price-period { color: #888; margin-bottom: 12px; font-size: 0.9em; }
+        .price-features { list-style: none; margin: 18px 0; text-align: right; }
+        .price-features li { padding: 6px 0; color: #a0a0b8; border-bottom: 1px solid #1e1e2e; font-size: 0.9em; }
+        .price-features li:last-child { border: none; }
+        .proof { background: #12121a; border: 1px solid #1e1e2e; border-radius: 12px; padding: 24px; margin: 24px 0; }
+        .proof-text { font-style: italic; color: #c0c0d0; margin-bottom: 12px; }
+        .proof-author { color: #00d4aa; font-weight: 600; }
+        footer { text-align: center; padding: 30px; color: #666; font-size: 0.85em; }
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.8em; }
+            .stats { grid-template-columns: 1fr; }
+            .features { grid-template-columns: 1fr; }
+            .pricing { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🤖 أنشئ موظف استقبال بالذكاء الاصطناعي</h1>
+            <p>يجيب على المكالمات 24/7، يحجز المواعيد، ويرسل متابعة فورية. جرّب مجانًا.</p>
+            <a href="#builder" class="btn">ابدأ الآن مجانًا</a>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><div class="stat-number">74%</div><div class="stat-label">مكالمات لا تُجاب عليها</div></div>
+            <div class="stat"><div class="stat-number">3K-10K$</div><div class="stat-label">قيمة كل مكالمة فائتة</div></div>
+            <div class="stat"><div class="stat-number">24/7</div><div class="stat-label">دائمًا متاح</div></div>
+        </div>
+
+        <div class="builder" id="builder">
+            <h2>🛠️ أنشئ موظف الاستقبال الخاص بك</h2>
+            <form id="builderForm">
+                <div class="form-group">
+                    <label>اسم الشركة</label>
+                    <input type="text" id="bizName" placeholder="مثال: شركة تكييف فينيكس" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع النشاط</label>
+                    <select id="bizType">
+                        <option value="hvac">تكييف وتبريد</option>
+                        <option value="plumbing">سباكة</option>
+                        <option value="dental">عيادة أسنان</option>
+                        <option value="clinic">عيادة طبية</option>
+                        <option value="roofing">سقفات</option>
+                        <option value="electrical">كهرباء</option>
+                        <option value="law">محاماة</option>
+                        <option value="realestate">عقارات</option>
+                        <option value="restaurant">مطعم</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>رسالة الترحيب (اختياري)</label>
+                    <textarea id="greeting" placeholder="مثال: مرحبًا بك في شركتنا، كيف يمكنني مساعدتك؟"></textarea>
+                </div>
+                <button type="submit" class="btn" style="width:100%;">إنشاء العرض التوضيحي</button>
+            </form>
+            
+            <div class="demo-area" id="demoArea">
+                <h3 style="margin-bottom: 20px; color: #fff;">🎉 تم إنشاء العرض!</h3>
+                <div class="phone-sim">
+                    <div class="pulse"></div>
+                    <h3 id="demoTitle">اسم الشركة</h3>
+                    <p id="demoGreeting">مرحبًا بك...</p>
+                    <button class="btn btn-secondary" id="callBtn">📞 اتصل بالموظف</button>
+                </div>
+                <p style="color: #888; font-size: 0.9em; margin-top: 15px;">هذا عرض توضيحي — النسخة الكاملة تجيب فعليًا وتحتجز المواعيد</p>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature"><h3>📞 رد فوري</h3><p>لا مزيد من البريد الصوتي</p></div>
+            <div class="feature"><h3>📅 حجز تلقائي</h3><p>يحجز المواعيد في تقويمك</p></div>
+            <div class="feature"><h3>💬 متابعة فورية</h3><p>رسالة نصية خلال 60 ثانية</p></div>
+            <div class="feature"><h3>📊 تقارير ذكية</h3><p>لوحة تحكم لكل مكالمة</p></div>
+        </div>
+
+        <div class="proof">
+            <p class="proof-text">"كنت أضيع 15-20 مكالمة أسبوعيًا. بعد تركيب الموظف الآلي، ارتفع معدل الحجز من 30% إلى 70%."</p>
+            <p class="proof-author">— شركة تكييف في تكساس</p>
+        </div>
+
+        <div class="pricing">
+            <div class="price-card">
+                <div class="price-amount">مجاني</div>
+                <div class="price-period">للتجربة</div>
+                <ul class="price-features">
+                    <li>عرض توضيحي واحد</li>
+                    <li>10 مكالمات/شهر</li>
+                    <li>علامة تجارية لنا</li>
+                    <li>تحليلات أساسية</li>
+                </ul>
+                <a href="#builder" class="btn btn-secondary">ابدأ مجانًا</a>
+            </div>
+            <div class="price-card featured">
+                <div class="price-amount">29$</div>
+                <div class="price-period">شهريًا</div>
+                <ul class="price-features">
+                    <li>عروض غير محدودة</li>
+                    <li>500 مكالمة/شهر</li>
+                    <li>علامة تجارية مخصصة</li>
+                    <li>لوحة تحكم متقدمة</li>
+                    <li>تسجيل العملاء المحتملين</li>
+                    <li>دعم أولوية</li>
+                </ul>
+                <a href="mailto:hello@ai-receptionist.co?subject=خطة Pro" class="btn">اشترك الآن</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>جاهز لبدء استقبال كل المكالمات؟</h2>
+            <p>سجل الآن واحصل على 7 أيام مجانية</p>
+            <a href="mailto:hello@ai-receptionist.co?subject=بدء التجربة" class="btn">ابدأ 7 أيام مجانية →</a>
+        </div>
+
+        <footer>
+            <p>© 2026 AI Receptionist Agency — جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+
+    <script>
+        const greetings = {
+            hvac: "مرحبًا بك في {company}، خبراء التكييف والتبريد. كيف يمكنني مساعدتك اليوم؟",
+            plumbing: "مرحبًا بك في {company}، خدمات السباكة الاحترافية. كيف يمكنني مساعدتك؟",
+            dental: "مرحبًا بك في {company}، عيادة الأسنان. كيف يمكنني مساعدتك؟ هل تريد حجز موعد؟",
+            clinic: "مرحبًا بك في {company}، العيادة الطبية. كيف يمكنني مساعدتك؟",
+            roofing: "مرحبًا بك في {company}، خبراء السقفات. كيف يمكنني مساعدتك؟",
+            electrical: "مرحبًا بك في {company}، خدمات الكهرباء. كيف يمكنني مساعدتك؟",
+            law: "مرحبًا بك في {company}، مكتب المحاماة. كيف يمكنني مساعدتك؟",
+            realestate: "مرحبًا بك في {company}، الشركة العقارية. كيف يمكنني مساعدتك؟",
+            restaurant: "مرحبًا بك في {company}، المطعم. هل تريد حجز طاولة؟",
+            other: "مرحبًا بك في {company}. كيف يمكنني مساعدتك اليوم؟"
+        };
+
+        document.getElementById('builderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const bizName = document.getElementById('bizName').value.trim();
+            const bizType = document.getElementById('bizType').value;
+            const customGreeting = document.getElementById('greeting').value.trim();
+            
+            let greeting = customGreeting || greetings[bizType].replace('{company}', bizName);
+            
+            document.getElementById('demoTitle').textContent = bizName;
+            document.getElementById('demoGreeting').textContent = greeting;
+            document.getElementById('demoArea').classList.add('active');
+            
+            const demoData = {
+                businessName: bizName,
+                businessType: bizType,
+                greeting: greeting,
+                createdAt: new Date().toISOString(),
+            };
+            
+            const demos = JSON.parse(localStorage.getItem('demos') || '[]');
+            demos.push(demoData);
+            localStorage.setItem('demos', JSON.stringify(demos));
+            
+            document.getElementById('demoArea').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('callBtn').addEventListener('click', function() {
+            alert('في النسخة الكاملة، يتم الاتصال بك الآن من الموظف الآلي. هذا عرض توضيحي فقط.');
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const demoParam = urlParams.get('demo');
+        if (demoParam) {
+            document.getElementById('bizName').value = decodeURIComponent(demoParam);
+            document.getElementById('demoTitle').textContent = decodeURIComponent(demoParam);
+            document.getElementById('demoArea').classList.add('active');
+        }
+
+        if (localStorage.getItem('page_visits')) {
+            localStorage.setItem('page_visits', parseInt(localStorage.getItem('page_visits')) + 1);
+        } else {
+            localStorage.setItem('page_visits', 1);
+        }
+    </script>
+</body>
+</html>
